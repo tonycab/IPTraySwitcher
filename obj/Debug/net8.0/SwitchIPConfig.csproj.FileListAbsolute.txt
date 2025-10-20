@@ -1,0 +1,5 @@
+C:\Users\alecabellec\source\repos\SwitchIPConfig\SwitchIPConfig\obj\Debug\net8.0\SwitchIPConfig.csproj.ResolveComReference.cache
+C:\Users\alecabellec\source\repos\SwitchIPConfig\SwitchIPConfig\obj\Debug\net8.0\SwitchIPConfig.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\alecabellec\source\repos\SwitchIPConfig\SwitchIPConfig\obj\Debug\net8.0\SwitchIPConfig.AssemblyInfoInputs.cache
+C:\Users\alecabellec\source\repos\SwitchIPConfig\SwitchIPConfig\obj\Debug\net8.0\SwitchIPConfig.AssemblyInfo.cs
+C:\Users\alecabellec\source\repos\SwitchIPConfig\SwitchIPConfig\obj\Debug\net8.0\SwitchIPConfig.csproj.CoreCompileInputs.cache

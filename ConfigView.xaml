@@ -1,0 +1,160 @@
+﻿<Window x:Class="IPTraySwitcherWPF.ConfigView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:IPTraySwitcherWPF"
+        Title="Configuration des Profils IP"
+        Height="450"
+        Width="950"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!-- Convertisseur pour inverser DHCP -->
+        <local:InverseBoolConverter x:Key="InverseBoolConverter" />
+        <!-- Convertisseur sécurisé pour les ToolTip de validation -->
+        <local:ValidationErrorConverter x:Key="ValidationErrorConverter" />
+
+        <!-- Style global pour TextBox avec validation -->
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError"
+                         Value="True">
+                    <Setter Property="BorderBrush"
+                            Value="Red" />
+                    <Setter Property="ToolTip">
+                        <Setter.Value>
+                            <MultiBinding Converter="{StaticResource ValidationErrorConverter}">
+                                <Binding RelativeSource="{RelativeSource Self}"
+                                         Path="(Validation.Errors)" />
+                            </MultiBinding>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel Margin="10">
+        <!-- Barre de boutons -->
+        <StackPanel DockPanel.Dock="Top"
+                    Orientation="Horizontal"
+                    Margin="0 0 0 10">
+            <Button Content="Charger"
+                    Width="100"
+                    Margin="0,0,10,0"
+                    Click="Load_Click" />
+            <Button Content="Sauvegarder"
+                    Width="100"
+                    Margin="0,0,10,0"
+                    Click="Save_Click" />
+            <Button Content="Ajouter"
+                    Width="100"
+                    Margin="0,0,10,0"
+                    Click="Add_Click" />
+            <Button Content="Supprimer"
+                    Width="100"
+                    Click="Delete_Click" />
+        </StackPanel>
+
+        <!-- Tableau principal -->
+        <DataGrid x:Name="ProfilesGrid"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="False"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  ItemsSource="{Binding Profiles}">
+
+            <!-- Ressource pour les interfaces -->
+            <DataGrid.Resources>
+                <CollectionViewSource x:Key="NetworkInterfacesSource"
+                                      Source="{Binding NetworkInterfaces}" />
+            </DataGrid.Resources>
+
+            <DataGrid.Columns>
+                <!-- Interface ComboBox -->
+                <DataGridComboBoxColumn Header="Interface"
+                                        SelectedItemBinding="{Binding Interface, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        ItemsSource="{Binding Source={StaticResource NetworkInterfacesSource}}"
+                                        Width="150" />
+
+                <!-- DHCP -->
+                <DataGridCheckBoxColumn Header="DHCP"
+                                        Binding="{Binding Dhcp, Mode=TwoWay}"
+                                        Width="70" />
+
+                <!-- Nom -->
+                <DataGridTextColumn Header="Nom"
+                                    Binding="{Binding Name, Mode=TwoWay}"
+                                    Width="120" />
+
+                <!-- IP -->
+                <DataGridTemplateColumn Header="IP"
+                                        Width="130">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox IsEnabled="{Binding Dhcp, Converter={StaticResource InverseBoolConverter}}">
+                                <TextBox.Text>
+                                    <Binding Path="IP"
+                                             Mode="TwoWay"
+                                             UpdateSourceTrigger="PropertyChanged"
+                                             ValidatesOnDataErrors="True" />
+                                </TextBox.Text>
+                            </TextBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Masque -->
+                <DataGridTemplateColumn Header="Masque"
+                                        Width="130">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox IsEnabled="{Binding Dhcp, Converter={StaticResource InverseBoolConverter}}">
+                                <TextBox.Text>
+                                    <Binding Path="Mask"
+                                             Mode="TwoWay"
+                                             UpdateSourceTrigger="PropertyChanged"
+                                             ValidatesOnDataErrors="True" />
+                                </TextBox.Text>
+                            </TextBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Passerelle -->
+                <DataGridTemplateColumn Header="Passerelle"
+                                        Width="130">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox IsEnabled="{Binding Dhcp, Converter={StaticResource InverseBoolConverter}}">
+                                <TextBox.Text>
+                                    <Binding Path="Gateway"
+                                             Mode="TwoWay"
+                                             UpdateSourceTrigger="PropertyChanged"
+                                             ValidatesOnDataErrors="True" />
+                                </TextBox.Text>
+                            </TextBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- DNS -->
+                <DataGridTemplateColumn Header="DNS"
+                                        Width="130">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox IsEnabled="{Binding Dhcp, Converter={StaticResource InverseBoolConverter}}">
+                                <TextBox.Text>
+                                    <Binding Path="DNS"
+                                             Mode="TwoWay"
+                                             UpdateSourceTrigger="PropertyChanged"
+                                             ValidatesOnDataErrors="True" />
+                                </TextBox.Text>
+                            </TextBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>
