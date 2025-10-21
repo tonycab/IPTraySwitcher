@@ -20,3 +20,4 @@ C:\Users\alecabellec\source\repos\SwitchIPConfig\IPTraySwitcher\obj\Release\net8
 C:\Users\alecabellec\source\repos\SwitchIPConfig\IPTraySwitcher\obj\Release\net8.0-windows\IPTraySwitcher.pdb
 C:\Users\alecabellec\source\repos\SwitchIPConfig\IPTraySwitcher\obj\Release\net8.0-windows\IPTraySwitcher.genruntimeconfig.cache
 C:\Users\alecabellec\source\repos\SwitchIPConfig\IPTraySwitcher\obj\Release\net8.0-windows\ref\IPTraySwitcher.dll
+C:\Users\alecabellec\source\repos\SwitchIPConfig\IPTraySwitcher\obj\Release\net8.0-windows\IPTraySwitcher.sourcelink.json
