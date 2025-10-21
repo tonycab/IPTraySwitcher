@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IPTraySwitcher")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d4c7688ef59d05d0ebc804c213ac919e85e6c1ab")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+54d7991c0ad5aac7cb24db7542ed33c61378877b")]
 [assembly: System.Reflection.AssemblyProductAttribute("IPTraySwitcher")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IPTraySwitcher")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
