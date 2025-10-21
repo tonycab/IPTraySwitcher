@@ -33,7 +33,6 @@ namespace IPTraySwitcherWPF
             if (_profiles != null)
             {
 
-
                 var padInterface = _profiles.OrderByDescending(p => p.Interface.Length).Select(p=>p.Interface.Length).First();
                 var padName = _profiles.OrderByDescending(p=>p.Name.Length).Select(p => p.Name.Length).First();
                 if (padName < "Automatique".Length) padName = "Automatique".Length;
