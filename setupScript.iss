@@ -35,6 +35,9 @@ Source: "bin\Release\net8.0-windows\icon.ico"; DestDir: "{app}"; Flags: ignoreve
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon.ico"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon.ico"
 
+[Run]
+Filename: "{app}\{#MyAppExeName}"; Description: "Lancer l'application"; Flags: nowait postinstall skipifsilent runascurrentuser
+
 [Code]
 procedure CreateScheduledTask();
 var
