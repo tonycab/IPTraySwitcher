@@ -32,18 +32,24 @@ namespace IPTraySwitcherWPF
 
             if (_profiles != null)
             {
+
+
+                var padInterface = _profiles.OrderByDescending(p => p.Interface.Length).Select(p=>p.Interface.Length).First();
+                var padName = _profiles.OrderByDescending(p=>p.Name.Length).Select(p => p.Name.Length).First();
+                if (padName < "Automatique".Length) padName = "Automatique".Length;
+
                 foreach (var p in _profiles)
                 {
                     if (p.Dhcp)
                     {
 
-                        menu.Items.Add($"{p.Interface.PadRight(12)} | {"Automatique".PadRight(20)} | (DHCP)", null, (s, ev) => SetDhcp(p.Interface, p.Name));
+                        menu.Items.Add($"{p.Interface.PadRight(padInterface)} | {"Automatique".PadRight(padName)} | (DHCP)", null, (s, ev) => SetDhcp(p.Interface, p.Name));
                     }
 
                     if (!p.Dhcp)
                     {
 
-                        menu.Items.Add($"{p.Interface.PadRight(12)} | {p.Name.PadRight(20)} | ({p.IP.PadRight(12)})", null, (s, ev) =>
+                        menu.Items.Add($"{p.Interface.PadRight(padInterface)} | {p.Name.PadRight(padName)} | ({p.IP})", null, (s, ev) =>
                             SetStaticIP(p.Interface,p.Name, p.IP, p.Mask, p.Gateway, p.DNS));
                     }
                 }
