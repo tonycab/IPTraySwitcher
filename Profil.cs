@@ -13,8 +13,9 @@ using System.Net;
         private string _mask;
         private string _gateway;
         private string _dns;
+    private string _description;
 
-        public string Interface
+    public string Interface
         {
             get => _interface;
             set { _interface = value; OnPropertyChanged(nameof(Interface)); }
@@ -72,8 +73,14 @@ using System.Net;
             set { _dns = value; OnPropertyChanged(nameof(DNS)); }
         }
 
-        // --- INotifyPropertyChanged ---
-        public event PropertyChangedEventHandler PropertyChanged;
+    public string Description
+    {
+        get => _description;
+        set { _description = value; OnPropertyChanged(nameof(Description)); }
+    }
+
+    // --- INotifyPropertyChanged ---
+    public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 

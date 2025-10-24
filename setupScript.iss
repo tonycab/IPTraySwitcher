@@ -24,6 +24,9 @@ PrivilegesRequired=admin
 Name: "fr"; MessagesFile: "compiler:Languages\French.isl"
 
 [Files]
+; Installation de la police Cascadia Mono
+Source: "Fonts\CascadiaMono.ttf"; DestDir: "{fonts}"; FontInstall: "Cascadia Mono"; Flags: onlyifdoesntexist uninsneveruninstall
+
 Source: "bin\Release\net8.0-windows\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net8.0-windows\{#MyAppName}.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net8.0-windows\{#MyAppName}.deps.json"; DestDir: "{app}"; Flags: ignoreversion

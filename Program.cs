@@ -22,7 +22,9 @@ namespace IPTraySwitcherWPF
 
         private string profileFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SIIF", "IPTraySwitcher","profiles.json");
         private string iconFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "icon.ico");
-        
+
+        public IEnumerable<string> Cartes { get; private set; }
+
         private void CreateMenu()
         {
             // Créer le menu contextuel
@@ -33,8 +35,8 @@ namespace IPTraySwitcherWPF
             if (_profiles != null)
             {
 
-                var padInterface = _profiles.OrderByDescending(p => p.Interface.Length).Select(p=>p.Interface.Length).First();
-                var padName = _profiles.OrderByDescending(p=>p.Name.Length).Select(p => p.Name.Length).First();
+                var padInterface = _profiles.OrderByDescending(p => p.Interface.Length).Select(p => p.Interface.Length).First();
+                var padName = _profiles.OrderByDescending(p => p.Name.Length).Select(p => p.Name.Length).First();
                 if (padName < "Automatique".Length) padName = "Automatique".Length;
 
                 foreach (var p in _profiles)
@@ -49,33 +51,49 @@ namespace IPTraySwitcherWPF
                     {
 
                         menu.Items.Add($"{p.Interface.PadRight(padInterface)} | {p.Name.PadRight(padName)} | ({p.IP})", null, (s, ev) =>
-                            SetStaticIP(p.Interface,p.Name, p.IP, p.Mask, p.Gateway, p.DNS));
+                            SetStaticIP(p.Interface, p.Name, p.IP, p.Mask, p.Gateway, p.DNS));
                     }
+
+                    if (Cartes.Contains(p.Interface) == false)
+                    {
+                        var item = (ToolStripMenuItem)menu.Items[menu.Items.Count - 1];
+                        item.Enabled = false;
+                        item.ToolTipText = "Interface réseau non détectée";
+
+                    }
+                    else
+                    {
+                        var item = (ToolStripMenuItem)menu.Items[menu.Items.Count - 1];
+                        item.Enabled = true;
+                        if (p.Description != null) item.ToolTipText = p.Description;
+                    }
+
+
                 }
-            }
 
-            menu.Items.Add("Ajouter des profils", null, (s, ev) =>
-            {
-                var a = new ConfigView(_profiles, profileFile);
-                var r = a.ShowDialog();
-
-                CreateMenu();
-                menu.Refresh();
-
-            });
-            menu.Items.Add("Voir les cartes réseaux", null, (s, ev) =>
-            {
-                Process.Start(new ProcessStartInfo
+                menu.Items.Add("Ajouter des profils", null, (s, ev) =>
                 {
-                    FileName = "ncpa.cpl",
-                    UseShellExecute = true
+                    var a = new ConfigView(_profiles, profileFile);
+                    var r = a.ShowDialog();
+
+                    CreateMenu();
+                    menu.Refresh();
+
                 });
-            });
+                menu.Items.Add("Voir les cartes réseaux", null, (s, ev) =>
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "ncpa.cpl",
+                        UseShellExecute = true
+                    });
+                });
 
 
-            menu.Items.Add(new ToolStripSeparator());
-           
-            menu.Items.Add("Quitter", null, (s, ev) => ExitApp());
+                menu.Items.Add(new ToolStripSeparator());
+
+                menu.Items.Add("Quitter", null, (s, ev) => ExitApp());
+            }
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -84,7 +102,7 @@ namespace IPTraySwitcherWPF
             base.OnStartup(e);
 
             // Liste les perifériques réseau
-            GetEthernet();
+            Cartes = GetEthernet();
 
             // Charger les profils JSON s'il existe
             LoadProfiles(profileFile);
@@ -184,7 +202,7 @@ namespace IPTraySwitcherWPF
             Shutdown();
         }
 
-        private void GetEthernet()
+        private IEnumerable<string> GetEthernet()
         {
             NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
 
@@ -204,6 +222,9 @@ namespace IPTraySwitcherWPF
 
                 Debug.WriteLine(new string('-', 40));
             }
+
+            return interfaces.Select(ni => ni.Name);
+
         }
 
 

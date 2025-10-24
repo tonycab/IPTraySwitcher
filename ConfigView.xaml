@@ -154,7 +154,14 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+
+                <!-- Nom -->
+                <DataGridTextColumn Header="Description"
+                                    Binding="{Binding Description, Mode=TwoWay}"
+                                    Width="400" />
+
             </DataGrid.Columns>
+
         </DataGrid>
     </DockPanel>
 </Window>
