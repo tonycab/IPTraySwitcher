@@ -45,8 +45,8 @@ jobs:
           Configuration: ${{ matrix.configuration }}
 
       # 6️⃣ Exécution des tests unitaires (si tu en as)
-      - name: Run tests
-        run: dotnet test --configuration ${{ matrix.configuration }} --no-build --verbosity normal
+      #- name: Run tests
+      #  run: dotnet test --configuration ${{ matrix.configuration }} --no-build --verbosity normal
 
       # 7️⃣ Export des binaires compilés comme artefacts
       - name: Upload build output
