@@ -1,0 +1,57 @@
+name: .NET Desktop CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+
+    env:
+      Solution_Name: SwitchIPConfig.sln   # <-- Remplace par le nom exact de ta solution
+
+    steps:
+      # 1️⃣ Récupération du code source
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Installation du SDK .NET 8 (ou la version que tu utilises)
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      # 3️⃣ Ajout de MSBuild à l'environnement
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      # 4️⃣ Restauration des dépendances NuGet
+      - name: Restore dependencies
+        run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+        env:
+          Configuration: ${{ matrix.configuration }}
+
+      # 5️⃣ Compilation du projet
+      - name: Build solution
+        run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration
+        env:
+          Configuration: ${{ matrix.configuration }}
+
+      # 6️⃣ Exécution des tests unitaires (si tu en as)
+      #- name: Run tests
+      #  run: dotnet test --configuration ${{ matrix.configuration }} --no-build --verbosity normal
+
+      # 7️⃣ Export des binaires compilés comme artefacts
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.configuration }}
+          path: |
+            **/bin/${{ matrix.configuration }}/
