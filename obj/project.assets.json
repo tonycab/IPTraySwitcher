@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\alecabellec\\source\\repos\\SwitchIPConfig\\IPTraySwitcher\\IPTraySwitcher.csproj",
+      "projectUniqueName": "C:\\Users\\alecabellec\\Source\\Repos\\IPTraySwitcher\\IPTraySwitcher.csproj",
       "projectName": "IPTraySwitcher",
-      "projectPath": "C:\\Users\\alecabellec\\source\\repos\\SwitchIPConfig\\IPTraySwitcher\\IPTraySwitcher.csproj",
+      "projectPath": "C:\\Users\\alecabellec\\Source\\Repos\\IPTraySwitcher\\IPTraySwitcher.csproj",
       "packagesPath": "C:\\Users\\alecabellec\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\alecabellec\\source\\repos\\SwitchIPConfig\\IPTraySwitcher\\obj\\",
+      "outputPath": "C:\\Users\\alecabellec\\Source\\Repos\\IPTraySwitcher\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

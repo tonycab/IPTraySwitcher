@@ -53,7 +53,7 @@ namespace IPTraySwitcherWPF {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/IPTraySwitcher;component/app.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/IPTraySwitcher;V0.0.3;component/app.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\App.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

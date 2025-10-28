@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Rf2+rB5UYc8=",
+  "dgSpecHash": "WuKFhD9NP7o=",
   "success": true,
-  "projectFilePath": "C:\\Users\\alecabellec\\source\\repos\\SwitchIPConfig\\IPTraySwitcher\\IPTraySwitcher.csproj",
+  "projectFilePath": "C:\\Users\\alecabellec\\source\\repos\\IPTraySwitcher\\IPTraySwitcher.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\alecabellec\\.nuget\\packages\\microsoft.net.sdk.compilers.toolset\\9.0.304\\microsoft.net.sdk.compilers.toolset.9.0.304.nupkg.sha512"
   ],
