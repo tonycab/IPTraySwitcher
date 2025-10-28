@@ -6,7 +6,7 @@
 
 [Setup]
 AppName={#MyAppName}
-AppVersion=1.1
+AppVersion=0.0.3
 AppPublisher=ALC
 DefaultDirName={commonpf}\SIIF\{#MyAppName}
 DefaultGroupName={#MyAppName}

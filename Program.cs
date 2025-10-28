@@ -5,10 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms; // nécessite ajouter référence : System.Windows.Forms
+using static System.Net.WebRequestMethods;
 using Application = System.Windows.Application;
 
 
@@ -115,8 +117,8 @@ namespace IPTraySwitcherWPF
             {
                 Icon = new System.Drawing.Icon(iconFile),
                 Visible = true,
-                Text = "IP Switcher",
-                ContextMenuStrip = menu
+                ContextMenuStrip = menu,
+                Text = $"IP Switcher {Assembly.GetExecutingAssembly().GetName().Version}" ,
             };
         }
 
@@ -125,9 +127,9 @@ namespace IPTraySwitcherWPF
             try
             {
                 
-                if (File.Exists(jsonPath))
+                if (System.IO.File.Exists(jsonPath))
                 {
-                    string json = File.ReadAllText(jsonPath);
+                    string json = System.IO.File.ReadAllText(jsonPath);
                     var T_profiles = JsonSerializer.Deserialize<Profile[]>(json);
                     _profiles = new ObservableCollection<Profile>(T_profiles);
                 }
@@ -144,7 +146,7 @@ namespace IPTraySwitcherWPF
                     var f = Path.GetDirectoryName(jsonPath);
                     Directory.CreateDirectory(f);
 
-                    File.WriteAllText(jsonPath, JsonSerializer.Serialize(_profiles, new JsonSerializerOptions { WriteIndented = true }));
+                    System.IO.File.WriteAllText(jsonPath, JsonSerializer.Serialize(_profiles, new JsonSerializerOptions { WriteIndented = true }));
                 }
             }
             catch (Exception ex)
@@ -153,13 +155,22 @@ namespace IPTraySwitcherWPF
             }
         }
 
-        private void SetDhcp(string interfaceName,string name)
+        private async void SetDhcp(string interfaceName,string name)
         {
             try
             {
-                RunNetsh($"interface ip set address \"{interfaceName}\" source=dhcp");
-                RunNetsh($"interface ip set dns \"{interfaceName}\" source=dhcp");
-                _trayIcon.ShowBalloonTip(2000, $"IP Switcher : {name}", "Mode DHCP activé ✅", ToolTipIcon.Info);
+                var r1 = await RunNetsh($"interface ip set address \"{interfaceName}\" source=dhcp");
+
+                Debug.WriteLine(r1.output);
+                Debug.WriteLine(r1.error);
+                
+                var r2 = await RunNetsh($"interface ip set dns \"{interfaceName}\" source=dhcp");
+
+                Debug.WriteLine(r2.output);
+                Debug.WriteLine(r2.error);
+
+               // "Mode DHCP activé ✅"
+                _trayIcon.ShowBalloonTip(2000, $"IP Switcher : {name}", $"Mode DHCP activé ✅ \r{InterfaceState(interfaceName)}", ToolTipIcon.Info);
             }
             catch (Exception e)
             {
@@ -167,13 +178,28 @@ namespace IPTraySwitcherWPF
             }
         }
 
-        private void SetStaticIP(string interfaceName, string name, string ip, string mask, string gateway, string dns)
+        private async void SetStaticIP(string interfaceName, string name, string ip, string mask, string gateway, string dns)
         {
             try
             {
-                RunNetsh($"interface ip set address name=\"{interfaceName}\" static {ip} {mask} {gateway} 1");
-                RunNetsh($"interface ip set dns name=\"{interfaceName}\" static {dns}");
-                _trayIcon.ShowBalloonTip(2000, $"IP Switcher : {name}", $"IP fixe appliquée : {ip}", ToolTipIcon.Info);
+                var r1 = await RunNetsh($"interface ip set address name=\"{interfaceName}\" static {ip} {mask} {gateway} 1");
+
+                Debug.WriteLine(r1.output);
+                Debug.WriteLine(r1.error);
+
+
+                if (dns != "")
+                {
+
+                    var r2 = await RunNetsh($"interface ip set dns name=\"{interfaceName}\" static {dns}");
+                    Debug.WriteLine(r2.output);
+                     Debug.WriteLine(r2.error);
+                }
+
+
+                _trayIcon.ShowBalloonTip(2000, $"IP Switcher : {name}", $"Mode IP fixe activé ✅ \r{InterfaceState(interfaceName)}", ToolTipIcon.Info);
+
+                 
             }
             catch (Exception e)
             {
@@ -181,19 +207,70 @@ namespace IPTraySwitcherWPF
             }
         }
 
-        private void RunNetsh(string args)
+        private async Task<(string output, string error)> RunNetsh(string args)
         {
             ProcessStartInfo psi = new ProcessStartInfo("netsh", args)
             {
                 CreateNoWindow = true,
                 UseShellExecute = false,
-                RedirectStandardOutput = false,
-                
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                StandardOutputEncoding = Encoding.UTF8,
+                StandardErrorEncoding = Encoding.UTF8,
                 Verb = "runas" // demande d'élévation admin
             };
 
-            Process.Start(psi)?.WaitForExit();
+            using var process = new Process { StartInfo = psi };
+
+            process.Start();
+
+            // Lecture asynchrone
+            string output = await process.StandardOutput.ReadToEndAsync();
+            string error = await process.StandardError.ReadToEndAsync();
+
+            await process.WaitForExitAsync();
+
+            return (output,error);
         }
+
+
+        // Vérifie si une interface contient une IP donnée
+        private string InterfaceState(string interfaceName)
+        {
+            var st = new StringBuilder();
+
+            foreach (var ni in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (ni.Name.Equals(interfaceName, StringComparison.OrdinalIgnoreCase))
+                {
+
+
+                    foreach (var item in ni.GetIPProperties().UnicastAddresses)
+                    {
+                        if (item.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                        {
+                            st.AppendLine($"IP : {item.Address.ToString()}");
+                            st.AppendLine($"Masque : {item.IPv4Mask.ToString()}");
+                        }
+                    }
+                    foreach (var item in ni.GetIPProperties().GatewayAddresses)
+                    {
+                        if (item.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                        {
+                            st.AppendLine($"Passerelle : {item.Address.ToString()}");
+                        }
+                    }
+
+
+
+                }
+            }
+            return st.ToString();
+        }
+
+
+
+
 
         private void ExitApp()
         {
